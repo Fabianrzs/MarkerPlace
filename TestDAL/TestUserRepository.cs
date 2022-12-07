@@ -12,26 +12,26 @@ namespace TestDAL
 
         private string connectionString = "Server=DKP-FABIAN\\SQLEXPRESS;Database=MarkerPlace;Trusted_Connection = True; MultipleActiveResultSets = true";
 
+        private UserRepository userRepository;
+
+        public TestUserRepository()
+        {
+            var connectionManager = new ConnectionManager(connectionString);
+            userRepository = new UserRepository(connectionManager);
+            connectionManager.Open();
+        }
+
+
         [TestMethod]
         public void InstanceRepository()
         {
-            var connectionManager = new ConnectionManager(connectionString);
-
-            var userRepository = new UserRepository(connectionManager);
-
             Assert.IsNotNull(userRepository);
         }
 
         [TestMethod]
         public void InsertUsers()
         {
-            var connectionManager = new ConnectionManager(connectionString);
-
-            connectionManager.Open();
-
-            var userRepository = new UserRepository(connectionManager);
-
-            var user = new User()
+           var user = new User()
             {
                 Password= "password123",
                 UserName = "UserName",
@@ -47,12 +47,6 @@ namespace TestDAL
         [TestMethod]
         public void UpdateUsers()
         {
-            var connectionManager = new ConnectionManager(connectionString);
-
-            connectionManager.Open();
-
-            var userRepository = new UserRepository(connectionManager);
-
             var user = new User()
             {
                 Id = 5,
@@ -70,12 +64,6 @@ namespace TestDAL
         [TestMethod]
         public void ConsultUsers()
         {
-            var connectionManager = new ConnectionManager(connectionString);
-
-            connectionManager.Open();
-
-            var userRepository = new UserRepository(connectionManager);
-
             var request = userRepository.GetAll();
 
             Assert.IsNotNull(request);
@@ -84,13 +72,7 @@ namespace TestDAL
         [TestMethod]
         public void ConsultUsersByUserName()
         {
-            var connectionManager = new ConnectionManager(connectionString);
-
-            connectionManager.Open();
-
             var userName = "UserName";
-
-            var userRepository = new UserRepository(connectionManager);
 
             var request = userRepository.GetBy<string>(userName);
 
@@ -100,14 +82,8 @@ namespace TestDAL
         [TestMethod]
         public void ChangeStateUser()
         {
-            var connectionManager = new ConnectionManager(connectionString);
-
-            connectionManager.Open();
-
             var state = (int)EntitiesState.ACTIVE;
             var id = 5;
-
-            var userRepository = new UserRepository(connectionManager);
 
             var request = userRepository.ChangeState(state, id);
 

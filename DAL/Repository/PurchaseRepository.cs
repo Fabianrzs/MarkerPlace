@@ -63,8 +63,8 @@ namespace DAL.Repository
                 command.Parameters.Add("@StatePurchase", SqlDbType.Int).Value = purchase.StatePurchase;
                 command.Parameters.Add("@Id", SqlDbType.Int).Value = purchase.Id;
 
-                command.CommandText = "Update Purchases set Password = @Password, " +
-                    "UserName = @UserName where Id = @Id";
+                command.CommandText = "Update Purchases set Date = @Date, Value = @Value, " +
+                    "IdPurchaseDetails = @IdPurchaseDetails, StatePurchase = @StatePurchase where Id = @Id";
 
                 return command.ExecuteNonQuery();
             }

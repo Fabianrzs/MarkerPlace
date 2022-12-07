@@ -53,8 +53,11 @@ namespace DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-
                 command.Parameters.Add("@Name", SqlDbType.VarChar).Value = product.Name;
+                command.Parameters.Add("@Image", SqlDbType.VarChar).Value = product.Image;
+                command.Parameters.Add("@Value", SqlDbType.Decimal).Value = product.Value;
+                command.Parameters.Add("@IdCategory", SqlDbType.Int).Value = product.Category;
+
                 command.Parameters.Add("@Id", SqlDbType.Int).Value = product.Id;
 
                 command.CommandText = "Update Products set Name = @Name ,Image = @Image, " +
