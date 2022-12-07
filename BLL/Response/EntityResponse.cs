@@ -12,6 +12,11 @@ namespace BLL.Response
             Menssage = message;
             Error = true;
         }
+        public EntityResponse(string message, bool error)
+        {
+            Menssage = message;
+            Error = error;
+        }
         public EntityResponse(TEntity entity) {
             Entity = entity;
             Error = false;

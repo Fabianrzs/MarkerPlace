@@ -119,8 +119,6 @@ namespace DAL.Repository
                 UserName = (string)dataReader["UserName"],
                 State = (int)dataReader["State"],
             };
-            
-            user.DesEncript();
 
             return user;
         }

@@ -29,7 +29,7 @@ namespace DAL.Repository
                 command.CommandText = "INSERT INTO PurchaseDetails (Amount, Value, IdPurchases, IdProduct, State)" +
                     " Values (@Amount, @Value, @IdPurchases, @IdProduct, @State)";
 
-                command.Parameters.Add("@Amount", SqlDbType.DateTime).Value = purchaseDetails.Amount;
+                command.Parameters.Add("@Amount", SqlDbType.Int).Value = purchaseDetails.Amount;
                 command.Parameters.Add("@Value", SqlDbType.Decimal).Value = purchaseDetails.Value;
                 command.Parameters.Add("@IdPurchases", SqlDbType.Int).Value = purchaseDetails.IdPurchase;
                 command.Parameters.Add("@IdProduct", SqlDbType.Int).Value = purchaseDetails.IdProducto;
@@ -57,7 +57,7 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
 
-                command.Parameters.Add("@Amount", SqlDbType.DateTime).Value = purchaseDetails.Amount;
+                command.Parameters.Add("@Amount", SqlDbType.Int).Value = purchaseDetails.Amount;
                 command.Parameters.Add("@Value", SqlDbType.Decimal).Value = purchaseDetails.Value;
                 command.Parameters.Add("@IdPurchases", SqlDbType.Int).Value = purchaseDetails.IdPurchase;
                 command.Parameters.Add("@IdProduct", SqlDbType.Int).Value = purchaseDetails.IdProducto;

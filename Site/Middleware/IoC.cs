@@ -17,7 +17,7 @@ namespace Site.Middelwors
             services.AddSingleton<IConnectionManager, ConnectionManager>();
             services.AddScoped<IJwtService, JwtService>();
 
-            #region Reposritories 
+            #region Repositories 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();

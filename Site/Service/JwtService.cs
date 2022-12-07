@@ -19,7 +19,7 @@ namespace Site.Service
         {
             if (user == null) return null;
 
-            var userResponse = new UserModel() { UserName = user.UserName, Role = user.Role };
+            var userResponse = new UserModel() { UserName = user.UserName, Role = user.Role, Id = user.Id };
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();

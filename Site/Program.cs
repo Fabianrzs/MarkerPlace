@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Site.Config;
@@ -17,12 +18,9 @@ builder.Services.AddControllersWithViews();
 var services = builder.Services;
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnnetion");
-
-
-
-
 Ioc.AddDependency(services);
 
+services.AddAutoMapper(typeof(IStartup));
 
 #region    configure strongly typed settings objects
 var appSettingsSection = builder.Configuration.GetSection("AppSetting");
