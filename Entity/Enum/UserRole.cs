@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entity.Enum
 {
-    internal class EntiesState
+    public enum UserRole
     {
+        ADMIN = 1,
+        CLIENT = 2,
     }
 }

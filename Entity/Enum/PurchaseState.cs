@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Entity.Enum
 {
-    internal class Class1
+    public enum PurchaseState
     {
+        BUY = 1,
+        CAR = 2,
+        CANCEL = 0
     }
 }

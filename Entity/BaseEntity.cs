@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Entity
 {
-    internal class BaseEntity
+    public class BaseEntity
     {
+        public int ID { get; set; }
+        public int State { get; set; }
+
+        public void ChangeState(int state)
+        {
+            State = state;
+        }
     }
 }
