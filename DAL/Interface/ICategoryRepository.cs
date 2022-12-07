@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace DAL.Interface
 {
-    public interface IUserRepository : ICreate<User>, IGet<User>
+    public interface ICategoryRepository : ICreate<Category>, IGet<Category>
     {
-        
+
     }
 }

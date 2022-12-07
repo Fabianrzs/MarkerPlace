@@ -1,4 +1,5 @@
 ﻿using DAL.Interface;
+using DAL.Interface.Actions;
 using Entity;
 using Entity.Enum;
 using System;
@@ -11,27 +12,22 @@ using System.Threading.Tasks;
 
 namespace DAL.Repository
 {
-    public class UserRepository : IUserRepository
+    public class CategoryRepository : ICategoryRepository
     {
         private SqlConnection _connection;
 
-        public UserRepository(IConnectionManager connection)
+        public CategoryRepository(IConnectionManager connection)
         {
             _connection = connection.Connection();
         }
 
-        public int Create(User user)
+        public int Create(Category category)
         {
             using (var command = _connection.CreateCommand())
             {
-
-                command.CommandText = "INSERT INTO Users (UserName, Password, Role, State)" +
-                    " Values (@UserName, @Password, @Role, @State)";
-                
-                command.Parameters.Add("@UserName", SqlDbType.VarChar).Value = user.UserName;
-                command.Parameters.Add("@Password", SqlDbType.VarChar).Value = user.Password;
-                command.Parameters.Add("@Role", SqlDbType.Int).Value = user.Role;
-                command.Parameters.Add("@State", SqlDbType.Int).Value = user.State;
+                command.CommandText = "INSERT INTO Tablet ()" +
+                   "Values (@)";
+                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
 
                 return command.ExecuteNonQuery();
             }
@@ -44,36 +40,31 @@ namespace DAL.Repository
 
                 command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
                 command.Parameters.Add("@State", SqlDbType.VarChar).Value = state;
-
-                command.CommandText = "Update Users set State = @State where Id = @Id";
+                command.CommandText = "Update Table set State = @State where Id = @Id";
                 return command.ExecuteNonQuery();
             }
         }
 
-        public int Update(User user)
+        public int Update(Category category)
         {
             using (var command = _connection.CreateCommand())
             {
 
-                command.Parameters.Add("@UserName", SqlDbType.VarChar).Value = user.UserName;
-                command.Parameters.Add("@Password", SqlDbType.VarChar).Value = user.Password;
-                
-                command.CommandText = "Update Table set Password = @Password, " +
-                    "UserName = @UserName where Id = @Id";
-                
+                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
+
+                command.CommandText = "Update Table set var = @ where Id = @Id";
                 return command.ExecuteNonQuery();
             }
         }
 
-        public User GetBy<T>(T userName)
+        public Category GetBy<T>(T query)
         {
             using (var command = _connection.CreateCommand())
             {
-                command.Parameters.Add("@UserName", SqlDbType.VarChar).Value = userName;
+                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
                 command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT Id, UserName, Password, Role, State " +
-                    "FROM Users WHERE UserName = @UserName AND State = @State";
+                command.CommandText = "SELECT  FROM Tablet WHERE  = @  AND State = @State";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
@@ -83,46 +74,41 @@ namespace DAL.Repository
                     }
                 }
             }
-
             return null;
         }
 
-        public List<User> GetAll()
+        public List<Category> GetAll()
         {
-            var users = new List<User>();
+            var categories = new List<Category>();
 
             using (var command = _connection.CreateCommand())
             {
                 command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT Id, UserName, Password, Role, State FROM Users WHERE State = @State;";
+                command.CommandText = "SELECT FROM Tablet WHERE State = @State;";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
                     while (dataReader.Read())
                     {
-                        users.Add(MappingUsers(dataReader));
+                        categories.Add(MappingUsers(dataReader));
                     }
                 }
             }
-            return users;
+
+            return categories;
         }
 
-        private User MappingUsers(SqlDataReader dataReader)
+        private Category MappingUsers(SqlDataReader dataReader)
         {
-            if(!dataReader.HasRows) return null;
-            var user = new User()
+            var category = new Category()
             {
                 Id = (int)dataReader["Id"],
-                Password = (string)dataReader["Password"],   
-                Role = (int)dataReader["Role"],
-                UserName = (string)dataReader["UserName"],
                 State = (int)dataReader["State"],
             };
-            
-            user.DesEncript();
-
-            return user;
+            return category;
         }
+
+
     }
 }

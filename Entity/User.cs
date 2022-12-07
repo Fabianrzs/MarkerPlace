@@ -1,9 +1,15 @@
-﻿using System.ComponentModel;
+﻿using Entity.Enum;
+using System.ComponentModel;
 
 namespace Entity
 {
     public class User: BaseEntity
     {
+
+        public User(): base() {
+            Role = (int)UserRole.CLIENT;
+        }
+
         public string UserName { get; set; }
         public string Password { get; set; }
         public int Role { get; set; }
