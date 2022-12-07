@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entity.Enum
 {
-    public enum EntiesState
+    public enum EntitiesState
     {
         ACTIVE = 1,
         DESACTIVE=0

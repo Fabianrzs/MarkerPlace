@@ -8,7 +8,7 @@ namespace Entity
 {
     public class BaseEntity
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public int State { get; set; }
 
         public void ChangeState(int state)

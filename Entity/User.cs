@@ -8,7 +8,6 @@ namespace Entity
         public string Password { get; set; }
         public int Role { get; set; }
 
-
         public void Encript()
         {
             byte[] encryted = System.Text.Encoding.Unicode.GetBytes(Password);

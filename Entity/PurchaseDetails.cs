@@ -8,7 +8,7 @@ namespace Entity
 {
     public class PurchaseDetails: BaseEntity
     {
-        public int Cantidad { get; set; }
+        public int Amount { get; set; }
         public decimal Value { get; set; }
         public int IdProducto { get; set; }
         public Product Product { get; set; }
@@ -17,7 +17,7 @@ namespace Entity
 
         public void CaculateValue(decimal value)
         {
-            Value = value*Cantidad;
+            Value = value* Amount;
         }
         
     }
