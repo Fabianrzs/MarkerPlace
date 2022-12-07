@@ -9,9 +9,8 @@ namespace DAL.Base
     {
         internal SqlConnection _connection;
 
-        private string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB; " +
-             "AttachDbFilename=C:\\Users\\WIN10\\source\\repos\\MarkerPlace\\DAL\\DatabaseMarketPlace.mdf" +
-             "Integrated Security=True; Trusted_Connection = True; MultipleActiveResultSets = True";
+        private string connectionString = "Server=DKP-FABIAN\\SQLEXPRESS;Database=MarkerPlace" +
+            ";Trusted_Connection = True; MultipleActiveResultSets = true";
 
         public ConnectionManager() => _connection = new SqlConnection(connectionString);
 
