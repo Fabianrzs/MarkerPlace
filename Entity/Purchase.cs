@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entity
 {
-    public class Purchase
+    public class Purchase: BaseEntity
     {
         public DateTime Date { get; } = DateTime.Now;
         public decimal Value { get; set; }

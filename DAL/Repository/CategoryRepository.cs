@@ -1,14 +1,8 @@
 ﻿using DAL.Interface;
-using DAL.Interface.Actions;
 using Entity;
 using Entity.Enum;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Repository
 {
@@ -25,9 +19,11 @@ namespace DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = "INSERT INTO Tablet ()" +
-                   "Values (@)";
-                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
+                //INSERT INTO Categories (Id, Name, State) values();
+                command.CommandText = " INSERT INTO Categories (Name, State)  Values (@Name, @State);";
+
+                command.Parameters.Add("@Name", SqlDbType.VarChar).Value = category.Name;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = category.State;
 
                 return command.ExecuteNonQuery();
             }
@@ -38,9 +34,9 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
 
-                command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
-                command.Parameters.Add("@State", SqlDbType.VarChar).Value = state;
-                command.CommandText = "Update Table set State = @State where Id = @Id";
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = state;
+                command.CommandText = "Update Categories set State = @State where Id = @Id";
                 return command.ExecuteNonQuery();
             }
         }
@@ -50,21 +46,22 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
 
-                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
+                command.Parameters.Add("@Name", SqlDbType.VarChar).Value = category.Name;
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = category.Id;
 
-                command.CommandText = "Update Table set var = @ where Id = @Id";
+                command.CommandText = "Update Categories set Name = @Name where Id = @Id";
                 return command.ExecuteNonQuery();
             }
         }
 
-        public Category GetBy<T>(T query)
+        public Category GetBy<T>(T id)
         {
             using (var command = _connection.CreateCommand())
             {
-                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
-                command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
+                command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT  FROM Tablet WHERE  = @  AND State = @State";
+                command.CommandText = "SELECT Id, Name, State FROM Categories WHERE Id = @Id  AND State = @State";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
@@ -85,7 +82,7 @@ namespace DAL.Repository
             {
                 command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT FROM Tablet WHERE State = @State;";
+                command.CommandText = "SELECT Id, Name, State FROM Categories WHERE State = @State;";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
@@ -104,6 +101,7 @@ namespace DAL.Repository
             var category = new Category()
             {
                 Id = (int)dataReader["Id"],
+                Name = (string)dataReader["Name"],
                 State = (int)dataReader["State"],
             };
             return category;

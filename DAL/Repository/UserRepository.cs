@@ -42,8 +42,8 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
 
-                command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
-                command.Parameters.Add("@State", SqlDbType.VarChar).Value = state;
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = state;
 
                 command.CommandText = "Update Users set State = @State where Id = @Id";
                 return command.ExecuteNonQuery();
@@ -70,7 +70,7 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
                 command.Parameters.Add("@UserName", SqlDbType.VarChar).Value = userName;
-                command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
                 command.CommandText = "SELECT Id, UserName, Password, Role, State " +
                     "FROM Users WHERE UserName = @UserName AND State = @State";
@@ -93,7 +93,7 @@ namespace DAL.Repository
 
             using (var command = _connection.CreateCommand())
             {
-                command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
                 command.CommandText = "SELECT Id, UserName, Password, Role, State FROM Users WHERE State = @State;";
                 var dataReader = command.ExecuteReader();
