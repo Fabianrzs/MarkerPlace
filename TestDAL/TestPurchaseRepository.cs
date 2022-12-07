@@ -7,17 +7,17 @@ using Entity.Enum;
 namespace TestDAL
 {
     [TestClass]
-    public class TestUserRepository
+    public class TestPurchaseRepository
     {
 
         private string connectionString = "Server=DKP-FABIAN\\SQLEXPRESS;Database=MarkerPlace;Trusted_Connection = True; MultipleActiveResultSets = true";
 
-        private IUserRepository _repository;
+        private IPurchaseRepository _repository;
 
-        public TestUserRepository()
+        public TestPurchaseRepository()
         {
             var connectionManager = new ConnectionManager(connectionString);
-            _repository = new UserRepository(connectionManager);
+            _repository = new PurchaseRepository(connectionManager);
             connectionManager.Open();
         }
 
@@ -29,40 +29,37 @@ namespace TestDAL
         }
 
         [TestMethod]
-        public void InsertUsers()
+        public void InsertPurchase()
         {
-           var user = new User()
+           var purchase = new Purchase()
             {
-                Password= "password123",
-                UserName = "UserName",
+                IdPurchaseDetails = 1,
+                StatePurchase = (int)PurchaseState.BUY,
+                Value= 1000000,
             };
 
-            user.Encript();
-
-            var request = _repository.Create(user);
+            var request = _repository.Create(purchase);
 
             Assert.AreEqual(request, 1);
         }
 
         [TestMethod]
-        public void UpdateUsers()
+        public void UpdatePurchase()
         {
-            var user = new User()
+            var purchase = new Purchase()
             {
-                Id = 5,
-                Password = "password12345",
-                UserName = "UserName",
+                Id = 1,
+                StatePurchase = (int)PurchaseState.CANCEL,
+                Value = 1000000,
             };
 
-            user.Encript();
-
-            var request = _repository.Update(user);
+            var request = _repository.Create(purchase);
 
             Assert.AreEqual(request, 1);
         }
 
         [TestMethod]
-        public void ConsultUsers()
+        public void ConsultPurchase()
         {
             var request = _repository.GetAll();
 
@@ -70,20 +67,20 @@ namespace TestDAL
         }
 
         [TestMethod]
-        public void ConsultUsersByUserName()
+        public void ConsultPurchaseById()
         {
-            var userName = "UserName";
+            var id = 1;
 
-            var request = _repository.GetBy<string>(userName);
+            var request = _repository.GetBy<int>(id);
 
-            Assert.AreEqual(request.UserName, userName);
+            Assert.AreEqual(request.Id, id);
         }
 
         [TestMethod]
-        public void ChangeStateUser()
+        public void ChangeStatePurchase()
         {
             var state = (int)EntitiesState.ACTIVE;
-            var id = 5;
+            var id = 1;
 
             var request = _repository.ChangeState(state, id);
 

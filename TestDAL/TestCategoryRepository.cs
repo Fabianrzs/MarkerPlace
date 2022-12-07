@@ -7,17 +7,17 @@ using Entity.Enum;
 namespace TestDAL
 {
     [TestClass]
-    public class TestUserRepository
+    public class TestCategoryRepository
     {
 
         private string connectionString = "Server=DKP-FABIAN\\SQLEXPRESS;Database=MarkerPlace;Trusted_Connection = True; MultipleActiveResultSets = true";
 
-        private IUserRepository _repository;
+        private ICategoryRepository _repository;
 
-        public TestUserRepository()
+        public TestCategoryRepository()
         {
             var connectionManager = new ConnectionManager(connectionString);
-            _repository = new UserRepository(connectionManager);
+            _repository = new CategoryRepository(connectionManager);
             connectionManager.Open();
         }
 
@@ -29,32 +29,27 @@ namespace TestDAL
         }
 
         [TestMethod]
-        public void InsertUsers()
+        public void InserCategory()
         {
-           var user = new User()
+           var category = new Category()
             {
-                Password= "password123",
-                UserName = "UserName",
+               Name = "Test",
             };
 
-            user.Encript();
-
-            var request = _repository.Create(user);
+            var request = _repository.Create(category);
 
             Assert.AreEqual(request, 1);
         }
 
         [TestMethod]
-        public void UpdateUsers()
+        public void UpdateCategory()
         {
-            var user = new User()
+            var user = new Category()
             {
-                Id = 5,
-                Password = "password12345",
-                UserName = "UserName",
+                Id = 1,
+                Name = "TestChange",
             };
 
-            user.Encript();
 
             var request = _repository.Update(user);
 
@@ -62,7 +57,7 @@ namespace TestDAL
         }
 
         [TestMethod]
-        public void ConsultUsers()
+        public void ConsultCategory()
         {
             var request = _repository.GetAll();
 
@@ -70,20 +65,20 @@ namespace TestDAL
         }
 
         [TestMethod]
-        public void ConsultUsersByUserName()
+        public void ConsultCategoryById()
         {
-            var userName = "UserName";
+            var id = 1;
 
-            var request = _repository.GetBy<string>(userName);
+            var request = _repository.GetBy<int>(id);
 
-            Assert.AreEqual(request.UserName, userName);
+            Assert.AreEqual(request.Id, id);
         }
 
         [TestMethod]
-        public void ChangeStateUser()
+        public void ChangeStateCategory()
         {
             var state = (int)EntitiesState.ACTIVE;
-            var id = 5;
+            var id = 1;
 
             var request = _repository.ChangeState(state, id);
 
