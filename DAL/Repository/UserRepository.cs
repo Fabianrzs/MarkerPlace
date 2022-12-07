@@ -58,7 +58,7 @@ namespace DAL.Repository
                 command.Parameters.Add("@UserName", SqlDbType.VarChar).Value = user.UserName;
                 command.Parameters.Add("@Password", SqlDbType.VarChar).Value = user.Password;
                 
-                command.CommandText = "Update Table set Password = @Password, " +
+                command.CommandText = "Update Users set Password = @Password, " +
                     "UserName = @UserName where Id = @Id";
                 
                 return command.ExecuteNonQuery();

@@ -25,9 +25,15 @@ namespace DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = "INSERT INTO Tablet ()" +
-                   "Values (@)";
-                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
+
+                command.CommandText = "INSERT INTO Purchases (Date, Value, IdPurchaseDetails, StatePurchase, State)" +
+                    " Values (@Date, @Value, @IdPurchaseDetails, @StatePurchase, @State)";
+
+                command.Parameters.Add("@Date", SqlDbType.DateTime).Value = purchase.Date;
+                command.Parameters.Add("@Value", SqlDbType.Decimal).Value = purchase.Value;
+                command.Parameters.Add("@IdPurchaseDetails", SqlDbType.Int).Value = purchase.IdPurchaseDetails;
+                command.Parameters.Add("@StatePurchase", SqlDbType.Int).Value = purchase.StatePurchase;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = purchase.State;
 
                 return command.ExecuteNonQuery();
             }
@@ -38,9 +44,10 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
 
-                command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
-                command.Parameters.Add("@State", SqlDbType.VarChar).Value = state;
-                command.CommandText = "Update Table set State = @State where Id = @Id";
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = state;
+
+                command.CommandText = "Update Purchases set State = @State where Id = @Id";
                 return command.ExecuteNonQuery();
             }
         }
@@ -50,21 +57,28 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
 
-                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
+                command.Parameters.Add("@Date", SqlDbType.DateTime).Value = purchase.Date;
+                command.Parameters.Add("@Value", SqlDbType.Decimal).Value = purchase.Value;
+                command.Parameters.Add("@IdPurchaseDetails", SqlDbType.Int).Value = purchase.IdPurchaseDetails;
+                command.Parameters.Add("@StatePurchase", SqlDbType.Int).Value = purchase.StatePurchase;
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = purchase.Id;
 
-                command.CommandText = "Update Table set var = @ where Id = @Id";
+                command.CommandText = "Update Purchases set Password = @Password, " +
+                    "UserName = @UserName where Id = @Id";
+
                 return command.ExecuteNonQuery();
             }
         }
 
-        public Purchase GetBy<T>(T query)
+        public Purchase GetBy<T>(T id)
         {
             using (var command = _connection.CreateCommand())
             {
-                command.Parameters.Add("@", SqlDbType.VarChar).Value = "";
-                command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
+                command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT  FROM Tablet WHERE  = @  AND State = @State";
+                command.CommandText = "SELECT Id, Date, Value, IdPurchaseDetails, StatePurchase, State" +
+                    "FROM Purchases WHERE Id = @Id AND State = @State";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
@@ -74,39 +88,45 @@ namespace DAL.Repository
                     }
                 }
             }
+
             return null;
         }
 
         public List<Purchase> GetAll()
         {
-            var purchase = new List<Purchase>();
+            var purchases = new List<Purchase>();
 
             using (var command = _connection.CreateCommand())
             {
-                command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
+                command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT FROM Tablet WHERE State = @State;";
+                command.CommandText = "SELECT Id, Date, Value, IdPurchaseDetails, StatePurchase, State FROM Purchases WHERE State = @State;";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
                     while (dataReader.Read())
                     {
-                        purchase.Add(MappingUsers(dataReader));
+                        purchases.Add(MappingUsers(dataReader));
                     }
                 }
             }
-
-            return purchase;
+            return purchases;
         }
 
         private Purchase MappingUsers(SqlDataReader dataReader)
         {
-            var purchase = new Purchase()
+            if (!dataReader.HasRows) return null;
+            var purchases = new Purchase()
             {
                 Id = (int)dataReader["Id"],
+                IdPurchaseDetails = (int)dataReader["IdPurchaseDetails"],
+                StatePurchase = (int)dataReader["StatePurchase"],
+                Value= (int)dataReader["Value"],    
                 State = (int)dataReader["State"],
             };
-            return purchase;
+
+
+            return purchases;
         }
 
 
