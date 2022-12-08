@@ -9,7 +9,7 @@ namespace DAL.Base
     {
         internal SqlConnection _connection;
 
-        private string connectionString = "Server=DKP-FABIAN\\SQLEXPRESS;Database=MarkerPlace" +
+        private string connectionString = "Server=localhost;Database=MarkerPlace" +
             ";Trusted_Connection = True; MultipleActiveResultSets = true";
 
         public ConnectionManager() => _connection = new SqlConnection(connectionString);
