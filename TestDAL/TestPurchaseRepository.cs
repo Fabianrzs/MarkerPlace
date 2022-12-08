@@ -33,7 +33,7 @@ namespace TestDAL
         {
            var purchase = new Purchase()
             {
-                IdPurchaseDetails = 1,
+                IdUser = 1,
                 StatePurchase = (int)PurchaseState.BUY,
                 Value= 1000000,
             };

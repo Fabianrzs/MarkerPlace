@@ -3,7 +3,7 @@
     public class Category
     {
         public string Name { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public ICollection<ProductInputModel> Products { get; set; }
 
     }
 }

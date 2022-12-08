@@ -45,22 +45,22 @@ namespace BLL.Service
             finally { _connectionManager.Close(); }
         }
 
-        public EntityResponse<Product> Create(Product category)
+        public EntityResponse<Product> Create(Product product)
         {
             try
             {
                 _connectionManager.Open();
 
-                Product productFind = _productRepository.GetBy<int>(category.Id);
+                Product productFind = _productRepository.GetBy<int>(product.Id);
 
                 if (productFind != null)
                 {
-                    return new EntityResponse<Product>($"No se puede crear el producto, {category.Id} ya se encuentra en uso");
+                    return new EntityResponse<Product>($"No se puede crear el producto, {product.Id} ya se encuentra en uso");
                 }
 
-                _productRepository.Create(category);
+                _productRepository.Create(product);
 
-                return new EntityResponse<Product>(category);
+                return new EntityResponse<Product>(product);
 
             }
             catch (Exception e)
@@ -70,23 +70,23 @@ namespace BLL.Service
             finally { _connectionManager.Close(); }
         }
 
-        public EntityResponse<Product> Edit<T>(Product category, T id)
+        public EntityResponse<Product> Edit(Product product)
         {
             try
             {
                 _connectionManager.Open();
 
-                Product productFind = _productRepository.GetBy<int>(category.Id);
+                Product productFind = _productRepository.GetBy<int>(product.Id);
 
                 if (productFind == null)
                 {
-                    return new EntityResponse<Product>($"No se puede editar el producto, {category.Id} es invalido");
+                    return new EntityResponse<Product>($"No se puede editar el producto, {product.Id} es invalido");
                 }
 
-                _productRepository.Update(category);
+                _productRepository.Update(product);
 
 
-                return new EntityResponse<Product>(category);
+                return new EntityResponse<Product>(product);
 
             }
             catch (Exception e)

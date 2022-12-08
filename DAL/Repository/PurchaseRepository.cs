@@ -26,15 +26,14 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
 
-                command.CommandText = "INSERT INTO Purchases (Date, Value, IdPurchaseDetails, StatePurchase, State)" +
-                    " Values (@Date, @Value, @IdPurchaseDetails, @StatePurchase, @State)";
+                command.CommandText = "INSERT INTO Purchases (Date, Value, IdUser, PurchaseState, State)" +
+                    " Values (@Date, @Value, @IdUser, @PurchaseState, @State)";
 
                 command.Parameters.Add("@Date", SqlDbType.DateTime).Value = purchase.Date;
                 command.Parameters.Add("@Value", SqlDbType.Decimal).Value = purchase.Value;
-                command.Parameters.Add("@IdPurchaseDetails", SqlDbType.Int).Value = purchase.IdPurchaseDetails;
-                command.Parameters.Add("@StatePurchase", SqlDbType.Int).Value = purchase.StatePurchase;
+                command.Parameters.Add("@IdUser", SqlDbType.Int).Value = purchase.IdUser;
+                command.Parameters.Add("@PurchaseState", SqlDbType.Int).Value = purchase.StatePurchase;
                 command.Parameters.Add("@State", SqlDbType.Int).Value = purchase.State;
-
                 return command.ExecuteNonQuery();
             }
         }
@@ -59,12 +58,12 @@ namespace DAL.Repository
 
                 command.Parameters.Add("@Date", SqlDbType.DateTime).Value = purchase.Date;
                 command.Parameters.Add("@Value", SqlDbType.Decimal).Value = purchase.Value;
-                command.Parameters.Add("@IdPurchaseDetails", SqlDbType.Int).Value = purchase.IdPurchaseDetails;
-                command.Parameters.Add("@StatePurchase", SqlDbType.Int).Value = purchase.StatePurchase;
+                command.Parameters.Add("@IdUser", SqlDbType.Int).Value = purchase.IdUser;
+                command.Parameters.Add("@PurchaseState", SqlDbType.Int).Value = purchase.StatePurchase;
                 command.Parameters.Add("@Id", SqlDbType.Int).Value = purchase.Id;
 
                 command.CommandText = "Update Purchases set Date = @Date, Value = @Value, " +
-                    "IdPurchaseDetails = @IdPurchaseDetails, StatePurchase = @StatePurchase where Id = @Id";
+                    "IdUser = @IdUser, PurchaseState = @PurchaseState where Id = @Id";
 
                 return command.ExecuteNonQuery();
             }
@@ -77,7 +76,7 @@ namespace DAL.Repository
                 command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
                 command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT Id, Date, Value, IdPurchaseDetails, StatePurchase, State" +
+                command.CommandText = "SELECT Id, Date, Value, IdUser, PurchaseState, State " +
                     "FROM Purchases WHERE Id = @Id AND State = @State";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
@@ -100,7 +99,7 @@ namespace DAL.Repository
             {
                 command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT Id, Date, Value, IdPurchaseDetails, StatePurchase, State FROM Purchases WHERE State = @State;";
+                command.CommandText = "SELECT Id, Date, Value, IdUser, PurchaseState, State FROM Purchases WHERE State = @State;";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
@@ -119,16 +118,32 @@ namespace DAL.Repository
             var purchases = new Purchase()
             {
                 Id = (int)dataReader["Id"],
-                IdPurchaseDetails = (int)dataReader["IdPurchaseDetails"],
-                StatePurchase = (int)dataReader["StatePurchase"],
-                Value= (int)dataReader["Value"],    
+                IdUser = (int)dataReader["IdUser"],
+                StatePurchase = (int)dataReader["PurchaseState"],
+                Value= (decimal)dataReader["Value"],    
                 State = (int)dataReader["State"],
             };
-
 
             return purchases;
         }
 
+        public int getLatesrId()
+        {
+            using (var command = _connection.CreateCommand())
+            {
+                command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
+                command.CommandText = "SELECT MAX(Id) as ID" +
+                    "FROM Purchases WHERE AND State = @State";
+                var dataReader = command.ExecuteReader();
+
+                if (dataReader.HasRows)
+                {
+                    return (int)dataReader["ID"];
+                }
+            }
+
+            return 0;
+        }
     }
 }

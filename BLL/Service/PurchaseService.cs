@@ -14,21 +14,146 @@ namespace BLL.Service
 {
     public class PurchaseService : IPurchaseService
     {
-        private readonly IPurchaseRepository _categoryRepository;
+        private readonly IPurchaseRepository _purchaseRepository;
+        private readonly IProductRepository _productRepository;
+        private readonly IPurchaseDetailRepository _purchaseDetailRepository;
         private readonly IConnectionManager _connectionManager;
 
-        public PurchaseService(IPurchaseRepository categoryRepository, IConnectionManager connectionManager)
+        public PurchaseService(IPurchaseRepository purchaseRepository, IConnectionManager connectionManager,
+            IPurchaseDetailRepository purchaseDetailRepository, IProductRepository productRepository)
         {
-            _categoryRepository = categoryRepository;
+            _purchaseRepository = purchaseRepository;
             _connectionManager = connectionManager;
+            _purchaseDetailRepository = purchaseDetailRepository;
+            _productRepository = productRepository; 
         }
+        public EntityResponse<Purchase> getPurchaseBy(int idUser)
+        {
+            try
+            {
+                _connectionManager.Open();
+
+                var purchases = _purchaseRepository.GetAll().FindAll(x=> x.IdUser == idUser).ToList();
+                var details = _purchaseDetailRepository.GetAll();
+                var products = _productRepository.GetAll();
+
+                if (purchases == null || purchases.Count == 0)
+                {
+                    return new EntityResponse<Purchase>($"No se encontraron compras registradas");
+                }
+
+                foreach (var purchase in purchases)
+                {
+                    purchase.PurchaseDetails = details.FindAll(x=>x.IdPurchase == purchase.Id).ToList();
+
+                    foreach (var item in purchase.PurchaseDetails)
+                    {
+                        item.Product = products.FirstOrDefault(x => x.Id == item.IdProduct);
+                    }
+                }
+
+                return new EntityResponse<Purchase>(purchases);
+
+            }
+            catch (Exception e)
+            {
+                return new EntityResponse<Purchase>($"Se presento el siguiente problema al consultar {e.Message}");
+            }
+            finally { _connectionManager.Close(); }
+        }
+        public EntityResponse<Purchase> RealizatePurchase(Purchase purchase)
+        {
+            try
+            {
+
+                //id Compra
+
+                _connectionManager.Open();
+
+                purchase.CalculateFullValue();
+                purchase.Buy();
+                
+                _purchaseRepository.Update(purchase);
+
+                int IdPurchase = _purchaseRepository.getLatesrId();
+
+                if (IdPurchase == 0)
+                {
+                    return new EntityResponse<Purchase>($"No se puede realizar la compra");
+                }
+
+                var productos = _productRepository.GetAll();
+
+                foreach (var item in purchase.PurchaseDetails)
+                {
+                    item.IdPurchase = IdPurchase;
+                    item.CaculateValue(productos.Find(x => x.Id == item.IdProduct).Value);
+                    _purchaseDetailRepository.Create(item);
+                }
+
+                    var products = _productRepository.GetAll();
+
+                foreach (var item in purchase.PurchaseDetails)
+                {
+                    var product = products.FirstOrDefault(x => x.Id == item.IdProduct);
+                    product.Descount(item.Amount);
+                    _productRepository.Update(product);
+                }
+
+                return new EntityResponse<Purchase>(purchase);
+
+            }
+            catch (Exception e)
+            {
+                return new EntityResponse<Purchase>($"Se presento el siguiente problema al crear la compra {e.Message}");
+            }
+            finally { _connectionManager.Close(); }
+        }
+        //public EntityResponse<Purchase> SaveOnTheCar(Purchase purchase)
+        //{
+        //    try
+        //    {
+
+        //        //idproducto y cantidad
+
+        //        _connectionManager.Open();
+
+        //        purchase.CalculateFullValue();
+
+        //        _purchaseRepository.Create(purchase);
+
+        //        int IdPurchase = _purchaseRepository.getLatesrId();
+
+        //        if (IdPurchase == 0)
+        //        {
+        //            return new EntityResponse<Purchase>($"No se puedo agregar la al carrito");
+        //        }
+
+        //        var productos = _productRepository.GetAll();
+
+        //        foreach (var item in purchase.PurchaseDetails)
+        //        {
+        //            item.IdPurchase = IdPurchase;
+        //            item.CaculateValue(productos.Find(x=>x.Id == item.IdProduct).Value);
+        //            _purchaseDetailRepository.Create(item);
+        //        }
+
+        //        return new EntityResponse<Purchase>(purchase);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return new EntityResponse<Purchase>($"Se presento el siguiente problema al crear la compra {e.Message}");
+        //    }
+        //    finally { _connectionManager.Close(); }
+        //}
         public EntityResponse<Purchase> ChangeState(int id, int state)
         {
             try
             {
                 _connectionManager.Open();
 
-                var status = _categoryRepository.ChangeState(state, id);
+                var status = _purchaseRepository.ChangeState(state, id);
 
                 if (status == 0)
                 {
@@ -44,23 +169,22 @@ namespace BLL.Service
             }
             finally { _connectionManager.Close(); }
         }
-
-        public EntityResponse<Purchase> Create(Purchase category)
+        public EntityResponse<Purchase> Create(Purchase purchase)
         {
             try
             {
                 _connectionManager.Open();
 
-                Purchase categoryFind = _categoryRepository.GetBy<int>(category.Id);
+                Purchase purchaseFind = _purchaseRepository.GetBy<int>(purchase.Id);
 
-                if (categoryFind != null)
+                if (purchaseFind != null)
                 {
-                    return new EntityResponse<Purchase>($"No se puede crear la compra, {category.Id} ya se encuentra en uso");
+                    return new EntityResponse<Purchase>($"No se puede crear la compra, {purchase.Id} ya se encuentra en uso");
                 }
 
-                _categoryRepository.Create(category);
+                _purchaseRepository.Create(purchase);
 
-                return new EntityResponse<Purchase>(category);
+                return new EntityResponse<Purchase>(purchase);
 
             }
             catch (Exception e)
@@ -69,24 +193,23 @@ namespace BLL.Service
             }
             finally { _connectionManager.Close(); }
         }
-
-        public EntityResponse<Purchase> Edit<T>(Purchase category, T id)
+        public EntityResponse<Purchase> Edit(Purchase purchase)
         {
             try
             {
                 _connectionManager.Open();
 
-                Purchase categoryFind = _categoryRepository.GetBy<int>(category.Id);
+                Purchase purchaseFind = _purchaseRepository.GetBy<int>(purchase.Id);
 
-                if (categoryFind == null)
+                if (purchaseFind == null)
                 {
-                    return new EntityResponse<Purchase>($"No se puede editar la compra, {category.Id} es invalido");
+                    return new EntityResponse<Purchase>($"No se puede editar la compra, {purchase.Id} es invalido");
                 }
 
-                _categoryRepository.Update(category);
+                _purchaseRepository.Update(purchase);
 
 
-                return new EntityResponse<Purchase>(category);
+                return new EntityResponse<Purchase>(purchase);
 
             }
             catch (Exception e)
@@ -95,22 +218,21 @@ namespace BLL.Service
             }
             finally { _connectionManager.Close(); }
         }
-
         public EntityResponse<Purchase> GetAll()
         {
             try
             {
                 _connectionManager.Open();
 
-                List<Purchase> categories = new List<Purchase>();
-                categories = _categoryRepository.GetAll();
+                List<Purchase> purchases = new List<Purchase>();
+                purchases = _purchaseRepository.GetAll();
 
-                if (categories == null || categories.Count == 0)
+                if (purchases == null || purchases.Count == 0)
                 {
                     return new EntityResponse<Purchase>($"No se encontraron compras registradas");
                 }
 
-                return new EntityResponse<Purchase>(categories);
+                return new EntityResponse<Purchase>(purchases);
 
             }
             catch (Exception e)
@@ -119,21 +241,20 @@ namespace BLL.Service
             }
             finally { _connectionManager.Close(); }
         }
-
         public EntityResponse<Purchase> GetById(int id)
         {
             try
             {
                 _connectionManager.Open();
 
-                Purchase categoryFind = _categoryRepository.GetBy<int>(id);
+                Purchase purchaseFind = _purchaseRepository.GetBy<int>(id);
 
-                if (categoryFind == null)
+                if (purchaseFind == null)
                 {
                     return new EntityResponse<Purchase>($"No se puedo encontrar la compra solicitada");
                 }
 
-                return new EntityResponse<Purchase>(categoryFind);
+                return new EntityResponse<Purchase>(purchaseFind);
 
             }
             catch (Exception e)

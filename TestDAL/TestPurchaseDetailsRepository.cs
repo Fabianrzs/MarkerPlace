@@ -33,7 +33,7 @@ namespace TestDAL
         {
            var purchaseDetails = new PurchaseDetails()
            {
-                IdProducto= 1,
+                IdProduct= 1,
                 IdPurchase= 1,
                 Value= 2999,
            };
@@ -48,7 +48,7 @@ namespace TestDAL
         {
             var purchaseDetails = new PurchaseDetails()
             {
-                IdProducto = 1,
+                IdProduct = 1,
                 IdPurchase = 1,
                 Value = 2999,
             };

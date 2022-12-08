@@ -70,7 +70,7 @@ namespace BLL.Service
             finally { _connectionManager.Close(); }
         }
 
-        public EntityResponse<PurchaseDetails> Edit<T>(PurchaseDetails category, T id)
+        public EntityResponse<PurchaseDetails> Edit(PurchaseDetails category)
         {
             try
             {

@@ -10,6 +10,6 @@ namespace DAL.Interface
 {
     public interface IPurchaseRepository : ICreate<Purchase>, IGet<Purchase>
     {
-
+        int getLatesrId();
     }
 }

@@ -13,6 +13,6 @@ namespace BLL.Interface.Actions
 
         EntityResponse<TEntity> Create(TEntity entity);
         EntityResponse<TEntity> ChangeState(int id, int state);
-        EntityResponse<TEntity> Edit<T>(TEntity entity, T id);
+        EntityResponse<TEntity> Edit(TEntity entity);
     }
 }

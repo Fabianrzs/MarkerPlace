@@ -25,12 +25,14 @@ namespace DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = "INSERT INTO Products (Name,Image,Value,IdCategory,State)" +
-                   "Values (@Name,@Image,@Value,@IdCategory,@State)";
+                command.CommandText = "INSERT INTO Products (Name,Image, @Availble, Description,Value,IdCategory,State)" +
+                   "Values (@Name,@Image, @Availble, @Description,@Value,@IdCategory,@State)";
                 command.Parameters.Add("@Name", SqlDbType.VarChar).Value = product.Name;
+                command.Parameters.Add("@Description", SqlDbType.VarChar).Value = product.Description;
                 command.Parameters.Add("@Image", SqlDbType.VarChar).Value = product.Image;
                 command.Parameters.Add("@Value", SqlDbType.Decimal).Value = product.Value;
-                command.Parameters.Add("@IdCategory", SqlDbType.Int).Value = product.Category;
+                command.Parameters.Add("@Availble", SqlDbType.Int).Value = product.Availble;
+                command.Parameters.Add("@IdCategory", SqlDbType.Int).Value = product.IdCategory;
                 command.Parameters.Add("@State", SqlDbType.Int).Value = product.State;
 
                 return command.ExecuteNonQuery();
@@ -54,14 +56,16 @@ namespace DAL.Repository
             using (var command = _connection.CreateCommand())
             {
                 command.Parameters.Add("@Name", SqlDbType.VarChar).Value = product.Name;
+                command.Parameters.Add("@Description", SqlDbType.VarChar).Value = product.Description;
                 command.Parameters.Add("@Image", SqlDbType.VarChar).Value = product.Image;
+                command.Parameters.Add("@Availble", SqlDbType.Int).Value = product.IdCategory;
                 command.Parameters.Add("@Value", SqlDbType.Decimal).Value = product.Value;
-                command.Parameters.Add("@IdCategory", SqlDbType.Int).Value = product.Category;
+                command.Parameters.Add("@IdCategory", SqlDbType.Int).Value = product.IdCategory;
 
                 command.Parameters.Add("@Id", SqlDbType.Int).Value = product.Id;
 
-                command.CommandText = "Update Products set Name = @Name ,Image = @Image, " +
-                    "Value = @Value, IdCategory = @IdCategory where Id = @Id";
+                command.CommandText = "Update Products set Name = @Name ,Image = @Image, Description = @Description ," +
+                    "Value = @Value, Availble=@Availble, IdCategory = @IdCategory where Id = @Id";
                 return command.ExecuteNonQuery();
             }
         }
@@ -70,10 +74,10 @@ namespace DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
                 command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT Name,Image,Value,IdCategory,State FROM Product WHERE Id = @Id AND State = @State";
+                command.CommandText = "SELECT Id, Availble,Description,Name,Image,Value,IdCategory,State FROM Products WHERE Id = @Id AND State = @State";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
@@ -94,7 +98,7 @@ namespace DAL.Repository
             {
                 command.Parameters.Add("@State", SqlDbType.VarChar).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT Name,Image,Value,IdCategory,State FROM Products WHERE State = @State;";
+                command.CommandText = "SELECT Id, Availble,Description,Name,Image,Value,IdCategory,State FROM Products WHERE State = @State;";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
@@ -113,7 +117,8 @@ namespace DAL.Repository
             var product = new Product()
             {
                 Id = (int)dataReader["Id"],
-                Description= (string)dataReader["Description"],
+                Availble = (int)dataReader["Availble"],
+                Description = (string)dataReader["Description"],
                 Image= (string)dataReader["Image"],
                 Name= (string)dataReader["Name"],
                 Value= (decimal)dataReader["Value"],

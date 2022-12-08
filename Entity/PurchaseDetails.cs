@@ -10,7 +10,7 @@ namespace Entity
     {
         public int Amount { get; set; }
         public decimal Value { get; set; }
-        public int IdProducto { get; set; }
+        public int IdProduct { get; set; }
         public Product Product { get; set; }
         public int IdPurchase { get; set; }
         public Purchase Purchase { get; set; }

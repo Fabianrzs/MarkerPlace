@@ -32,7 +32,7 @@ namespace DAL.Repository
                 command.Parameters.Add("@Amount", SqlDbType.Int).Value = purchaseDetails.Amount;
                 command.Parameters.Add("@Value", SqlDbType.Decimal).Value = purchaseDetails.Value;
                 command.Parameters.Add("@IdPurchases", SqlDbType.Int).Value = purchaseDetails.IdPurchase;
-                command.Parameters.Add("@IdProduct", SqlDbType.Int).Value = purchaseDetails.IdProducto;
+                command.Parameters.Add("@IdProduct", SqlDbType.Int).Value = purchaseDetails.IdProduct;
                 command.Parameters.Add("@State", SqlDbType.Int).Value = purchaseDetails.State;
 
                 return command.ExecuteNonQuery();
@@ -60,7 +60,7 @@ namespace DAL.Repository
                 command.Parameters.Add("@Amount", SqlDbType.Int).Value = purchaseDetails.Amount;
                 command.Parameters.Add("@Value", SqlDbType.Decimal).Value = purchaseDetails.Value;
                 command.Parameters.Add("@IdPurchases", SqlDbType.Int).Value = purchaseDetails.IdPurchase;
-                command.Parameters.Add("@IdProduct", SqlDbType.Int).Value = purchaseDetails.IdProducto;
+                command.Parameters.Add("@IdProduct", SqlDbType.Int).Value = purchaseDetails.IdProduct;
 
                 command.Parameters.Add("@Id", SqlDbType.Int).Value = purchaseDetails.Id;
 
@@ -78,8 +78,10 @@ namespace DAL.Repository
                 command.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
                 command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT Id, Amount, Value, IdPurchases, IdProduct, State" +
-                    "FROM PurchaseDetails WHERE Id = @Id AND State = @State";
+                command.CommandText = "SELECT Id, Amount, Value, IdPurchases, IdProduct, State " +
+                    "FROM PurchaseDetails WHERE State = @State AND Id = @Id;";
+
+               
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
                 {
@@ -101,7 +103,8 @@ namespace DAL.Repository
             {
                 command.Parameters.Add("@State", SqlDbType.Int).Value = (int)EntitiesState.ACTIVE;
 
-                command.CommandText = "SELECT Id, Amount, Value, IdPurchases, IdProduct, State" +
+                //Id	Amount	Value	State	IdPurchases	IdProduct
+                command.CommandText = "SELECT Id, Amount, Value, IdPurchases, IdProduct, State " +
                     "FROM PurchaseDetails WHERE State = @State;";
                 var dataReader = command.ExecuteReader();
                 if (dataReader.HasRows)
@@ -118,14 +121,13 @@ namespace DAL.Repository
         private PurchaseDetails MappingUsers(SqlDataReader dataReader)
         {
             if (!dataReader.HasRows) return null;
-
             var purchases = new PurchaseDetails()
             {
                 Id = (int)dataReader["Id"],
-                Value = (int)dataReader["Value"],
+                Value = (decimal)dataReader["Value"],
                 Amount= (int)dataReader["Amount"],
-                IdProducto = (int)dataReader["IdProducto"],
-                IdPurchase = (int)dataReader["IdProducto"],                
+                IdProduct = (int)dataReader["IdProduct"],
+                IdPurchase = (int)dataReader["IdPurchases"],                
                 State = (int)dataReader["State"],
             };
 
