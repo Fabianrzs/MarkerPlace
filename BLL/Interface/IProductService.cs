@@ -1,5 +1,4 @@
 ﻿using BLL.Interface.Actions;
-using BLL.Response;
 using Entity;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Interface
 {
-    public interface ICategoryService : ICreate<Category>, IGet<Category>
+    public interface IProductService : ICreate<Product>, IGet<Product>
     {
 
     }

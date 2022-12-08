@@ -20,8 +20,6 @@ var services = builder.Services;
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnnetion");
 Ioc.AddDependency(services);
 
-services.AddAutoMapper(typeof(IStartup));
-
 #region    configure strongly typed settings objects
 var appSettingsSection = builder.Configuration.GetSection("AppSetting");
 services.Configure<AppSetting>(appSettingsSection);
