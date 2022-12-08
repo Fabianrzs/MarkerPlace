@@ -5,6 +5,7 @@ import Login from "../pages/users/Login";
 import Register from "../pages/users/Register";
 import Products from "../pages/products/Products";
 import ProductRegister from "../pages/products/ProductsAdd";
+import CategoryRegister from "../pages/products/Registercategory";
 
 const AppRoutes = [
   {
@@ -22,10 +23,14 @@ const AppRoutes = [
     element: <Home />,
     logeade: false
   },
-
   {
     path: '/productRegister',
     element: <ProductRegister />,
+    logeade: false
+  },
+  {
+    path: '/categoryRegister',
+    element: <CategoryRegister/>,
     logeade: false
   },
   {

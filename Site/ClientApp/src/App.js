@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout } from './components/Layout';
-import './custom.css';
+import './Styles/custom.css';
 import {AuthProvider} from "./context/AuthContext";
 import Router from "./routes/router";
 
