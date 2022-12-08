@@ -8,7 +8,7 @@ using Site.Service;
 
 namespace Site.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {

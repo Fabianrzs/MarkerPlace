@@ -1,22 +1,23 @@
-import React, { Component } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import AppRoutes from './AppRoutes';
+import React from 'react';
 import { Layout } from './components/Layout';
 import './custom.css';
+import {AuthProvider} from "./context/AuthContext";
+import Router from "./routes/router";
 
-export default class App extends Component {
-  static displayName = App.name;
-
-  render() {
+export default function  App (){
     return (
       <Layout>
-        <Routes>
-          {AppRoutes.map((route, index) => {
-            const { element, ...rest } = route;
-            return <Route key={index} {...rest} element={element} />;
-          })}
-        </Routes>
+          <AppState>
+              <Router/>
+          </AppState>
       </Layout>
     );
-  }
+}
+
+const AppState = ({children}) => {
+    return (
+        <AuthProvider>
+            {children}
+        </AuthProvider>
+    )
 }
