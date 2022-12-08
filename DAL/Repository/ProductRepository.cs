@@ -25,7 +25,7 @@ namespace DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = "INSERT INTO Products (Name,Image, @Availble, Description,Value,IdCategory,State)" +
+                command.CommandText = "INSERT INTO Products (Name,Image, Availble, Description,Value,IdCategory,State)" +
                    "Values (@Name,@Image, @Availble, @Description,@Value,@IdCategory,@State)";
                 command.Parameters.Add("@Name", SqlDbType.VarChar).Value = product.Name;
                 command.Parameters.Add("@Description", SqlDbType.VarChar).Value = product.Description;
